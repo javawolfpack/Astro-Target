@@ -30,15 +30,15 @@ The config.json is the default config file used to generate the view data. I hop
 
 ### Config Fields
 
-* **sen_pixel_width**
-* **sen_pixel_height**
-* **sen_width**
-* **sen_height**
-* **scope_focal**
-* **concurrency**
-* **pixel_size**
-* **percent_capture**
-* **crop_factor**
-* **lat** 
-* **lon**
-* **yard**
+* **sen_pixel_width** - Camera Resolution Width Pixels
+* **sen_pixel_height** - Camera Resolution Height Pixels
+* **sen_width** - Camera Sensor Width in mm
+* **sen_height** - Camera Sensor Height in mm
+* **scope_focal** - Telescope or lens focal length in mm
+* **concurrency** - Python concurrency, ideally set this to match the number of CPU cores on your machine.
+* **pixel_size** - Size of camera sensor pixel in μm or micrometers
+* **percent_capture** - What percentage of the camera diagonal should the DSO fill
+* **crop_factor** - What is the crop factor for your camera sensor, used to multiply the focal length
+* **lat** - GPS latitude of yard data is being generated for NASA Ames Research Center used in the provided config.
+* **lon** - GPS longitude of yard data is being generated for NASA Ames Research Center used in the provided config.
+* **yard** - List of JSON objects noting azimuth/altitude measurements in a 360 degree view from the yard location where targets will be viewed from. I used an app called Dioptra and my phone on a tripod at the location to measure altitude of objects restricting horizon in about 5 degree steps. You should create a new list for the yard yourself ideally sorted, the more accurate the better. 
