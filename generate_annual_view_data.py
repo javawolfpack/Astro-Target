@@ -15,10 +15,6 @@ c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='astro';")
 jobs = c.fetchall()
 if len(jobs) <= 0:
     c.execute("CREATE TABLE astro (id INTEGER PRIMARY KEY AUTOINCREMENT, type varchar(10), data json)")
-# conn.close()
-
-lock = mp.Lock()
-insert_many = True
 
 # Taken from astroplan source: https://astroplan.readthedocs.io/en/latest/_modules/astroplan/moon.html
 def moon_phase_angle(moon, sun, ephemeris=None):
