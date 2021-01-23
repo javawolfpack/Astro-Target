@@ -96,12 +96,8 @@ def view_times(name, yard, sunaltazs_next_year, tz, home,dso_data):
     month = None
     day = None
     data = None
-    ## MongoDB connection
-    
-    # collection = db.astro_collection
     
     print(f"Finding view times for {name} over the next year")
-    # documents = []
     for sun in sunaltazs_next_year:
         if sun.alt < -18*u.deg:
             if not dark:
@@ -156,65 +152,21 @@ def view_times(name, yard, sunaltazs_next_year, tz, home,dso_data):
         else:
             if data != None:
                 dso_data+=[data]
-                # if insert_many: ##Initial DB population
-                #     documents+=[data]
-                # else:
-                #     matches = collection.count_documents({
-                #         "name":name,
-                #         "year":data["year"],
-                #         "month":data["month"],
-                #         "day":data["day"]
-                #         })
-                #     if matches == 0:
-                #         if len(data["seen"])>0:
-                #             collection.insert(data)
             dark = False
             data = None
             continue
-    # if insert_many:
-    #     lock.acquire()
-    #     try:
-    #         f = open("dso.txt","a+")
-    #         for d in documents:
-    #             f.write(str(d)+"\n")
-    #         f.close()
-    #         # tdb = TinyDB('./astrodb.json')
-    #         # tdb_table = tdb.table('astro_collection')
-    #         # tdb_table.insert_multiple(documents)
-    #         # tdb.close()
-    #     finally:
-    #         lock.release()
-        # collection.insert_multiple(documents)
-        # collection.insertMany(documents)
     print(f"Finished finding view times for {name}")
 
 def get_moon_data(sun, moon_data):
-    # collection = db.moon_data
-    # moon_table = tdb.table("moon_data")
     if sun.alt < -0*u.deg:
         moon = get_moon(sun.obstime).transform_to(AltAz(obstime=sun.obstime, location=home))
         moon_frac = moon_illumination(moon,sun)
-        # moon_phases = {}
         moon_phases={
             "time":str(sun.obstime.to_datetime(timezone=tz)),
             "moonalt": Angle(moon.alt).degree,
             "moonfrac": moon_frac
         }
         moon_data+=[moon_phases]
-        # collection.insert_one(moon_phases)
-        # lock.acquire()
-        # try:
-        #     f = open("moon.txt","a+")
-        #     f.write(str(moon_phases)+"\n")
-        #     f.close()
-        #     # tdb = TinyDB('./astrodb.json')
-        #     # tdb_table = tdb.table('moon_data')
-        #     # tdb_table.insert(moon_phases)
-        #     # tdb.close()
-        # except e:
-        #     print(e)
-        # finally:
-        #     lock.release()
 
 def quick_view_times(dsocoord, yard, sunaltazs_next_year, home):
     for sun in sunaltazs_next_year:
@@ -224,9 +176,6 @@ def quick_view_times(dsocoord, yard, sunaltazs_next_year, home):
         if dsoalt > 0:
             if can_see(yard, dsoalt, dsoaz):
                 return True
-    # if insert_many:
-    #     collection.insertMany(documents)
-    # print(f"Finished finding if {dso}")
     return False
 
 
@@ -252,10 +201,8 @@ if __name__ == "__main__":
     as_pixel = (config_data["pixel_size"]/focal)*206.265
     #arc degree/pixel conversion (not needed)
     as_pixel_degree = as_pixel*0.000277778
-    # print(diangle)
     #Percent of Diagonal Field of View for minimum target size
     size_min = diangle*(config_data["percent_capture"]/100)
-    # print(size_min)
     print("Parsing Stellarium Catalog")
     f = open("stellarium_catalog.txt","r")
     count = 0
@@ -276,7 +223,6 @@ if __name__ == "__main__":
                 "size":float(line[7])/60
             }
             obj_list+=[data]
-            #line[16]+ " "+ line[17] + " "+ line[18]+ " " + line[4]+ " " + line[3] + " " + str(float(line[7])/60) 
             count+=1
     print("Parsing NGC 2000.0 Catalog")
     f = open("VII_118/ngc2000.dat")
@@ -315,7 +261,6 @@ if __name__ == "__main__":
                     obj_list+=[data]
                     count+=1
                 except:
-                    # print(name + " Not Found")
                     continue
     percent = config_data["percent_capture"]
     print(f"Found {count} objects {percent}% or larger than the FOV diagonal angle")
@@ -348,7 +293,6 @@ if __name__ == "__main__":
             try:
                 name = "NGC"+str(dso["NGC"])
                 dsocoord = SkyCoord.from_name(name)
-                # print(f"Checking {name}")
                 succeed = True
             except:
                 succeed = False
@@ -356,7 +300,6 @@ if __name__ == "__main__":
             try:
                 name = "IC"+str(dso["IC"])
                 dsocoord = SkyCoord.from_name(name)
-                # print(f"Checking {name}")
                 succeed = True
             except:
                 succeed = False
@@ -364,16 +307,13 @@ if __name__ == "__main__":
             try:
                 name = "M"+str(dso["M"])
                 dsocoord = SkyCoord.from_name(name)
-                # print(f"Checking {name}")
                 succeed = True
             except:
                 succeed = False
         if succeed:
-            if dsocoord != None:
-                see = quick_view_times(dsocoord, yard, suntimes, home)
-                if see:
-                    obj_list_visible+=[dso]
-                # print(f"Can see {name}")
+            see = quick_view_times(dsocoord, yard, suntimes, home)
+            if see:
+                obj_list_visible+=[dso]
 
     print("Quick DSO visibility check finished")
     count = len(obj_list_visible)
@@ -390,15 +330,12 @@ if __name__ == "__main__":
         for sun in sunaltazs_next_year:
             if sun.alt <= -0*u.deg:
                 pool2.apply_async(get_moon_data, args=(sun, moon_data))
-                # get_moon_data(sun)
         pool2.close()
         pool2.join()
-        # print(moon_data)
         for line in moon_data:
             c.execute("insert into astro(type, data) values (?, ?)",
                 ["moon", json.dumps(line)])
             conn.commit()
-        # quit()
         dso_data = manager.list()
         print("Finished Calculating Annual Moon Phase Data")
         print("Calculating Annual View Data for Visible Objects - takes at least an hour")
@@ -432,7 +369,6 @@ if __name__ == "__main__":
                 pool.apply_async(view_times, args=(name, yard, sunaltazs_next_year, tz, home,dso_data))
         pool.close()
         pool.join()
-        # print(dso_data)
         for line in dso_data:
             c.execute("insert into astro(type, data) values (?, ?)",
                 ["dso", json.dumps(line)])
