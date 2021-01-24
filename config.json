@@ -7,7 +7,7 @@
     "concurrency": 4,
     "pixel_size": 4.35,
     "percent_capture": 15,
-    "crop_factor":2,
+    "crop_factor":1,
     "lat":37.42744540096071, 
     "lon":-122.06191613072063,
     "yard": [ 
