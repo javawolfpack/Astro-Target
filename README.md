@@ -114,6 +114,14 @@ Now you can use the data to generate an annual view file for a given target you 
 
 ```bash
 (venv) $ python csv_data.py
+Available DSO Targets
+1. M45
+2. M8
+...
+33. IC5070
+34. IC1396
+
+Select DSO Target: <enter a number here of the target you want info on>
 ```
 
 
