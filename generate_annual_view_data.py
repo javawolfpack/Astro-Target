@@ -153,7 +153,7 @@ def view_times(name, yard, sunaltazs_next_year, tz, home,dso_data):
             continue
     print(f"Finished finding view times for {name}")
 
-def get_moon_data(sun, moon_data):
+def get_moon_data(sun, moon_data, home):
     if sun.alt < -0*u.deg:
         moon = get_moon(sun.obstime).transform_to(AltAz(obstime=sun.obstime, location=home))
         moon_frac = moon_illumination(moon,sun)
@@ -325,7 +325,7 @@ if __name__ == "__main__":
         pool2 = mp.Pool(processes=config_data["concurrency"])
         for sun in sunaltazs_next_year:
             if sun.alt <= -0*u.deg:
-                pool2.apply_async(get_moon_data, args=(sun, moon_data))
+                pool2.apply_async(get_moon_data, args=(sun, moon_data, home))
         pool2.close()
         pool2.join()
         for line in moon_data:
