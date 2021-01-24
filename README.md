@@ -67,3 +67,31 @@ There are two primary scripts at this point:
 * **generate_annual_view_data.py** - leverage *config.json* or a specified alternative config file to generate view data for targets over the next year based on the complex horizon line given and your setup/location. 
 
 * **csv_data.py** - Will give you a numbered list of DSOs that are visible over the next year from the data the *generate_annual_view_data.py* script created. Select the one you wish to get the view data for and it'll generate a CSV file with the nights of the next year, how much time the given target is visible in your horizon, how much time it's above 30 degress, how much time the moon is up that night, and what the maximum fraction the moon is at that night. It's then easy to port this into a spreadsheet app to sort/graph. 
+
+### Step 1
+
+Make sure you run the *generate_annual_view_data.py* first, but before that you need to make sure your [Python](https://www.python.org/) environment it setup correctly. You need to install Python 3.8 or newer, it may work with earlier versions of Python3 but it has been tested with Python 3.8 & 3.9. 
+
+* Create a virtual environment:
+```bash
+$ python3 -m venv <name of your virtual environment>
+# I typically use venv as my virtual environment name so
+$ python3 -m venv venv
+```
+* Enable virtual environment:
+```bash
+# I'm using the fact mine is named venv going forward
+$ source venv/bin/activate
+# Once active you should see something like this with your shell
+(venv) $
+```
+* Install Requirements:
+```bash
+# Install list of python environment requirements 
+# from the requirements.txt file
+(venv) $ pip install -r requirements.txt
+```
+
+
+
+
