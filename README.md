@@ -68,9 +68,9 @@ There are two primary scripts at this point:
 
 * **csv_data.py** - Will give you a numbered list of DSOs that are visible over the next year from the data the *generate_annual_view_data.py* script created. Select the one you wish to get the view data for and it'll generate a CSV file with the nights of the next year, how much time the given target is visible in your horizon, how much time it's above 30 degress, how much time the moon is up that night, and what the maximum fraction the moon is at that night. It's then easy to port this into a spreadsheet app to sort/graph. 
 
-### Step 1
+### Step 1 - Get environment setup
 
-Make sure you run the *generate_annual_view_data.py* first, but before that you need to make sure your [Python](https://www.python.org/) environment it setup correctly. You need to install Python 3.8 or newer, it may work with earlier versions of Python3 but it has been tested with Python 3.8 & 3.9. 
+The first step is to make sure your [Python](https://www.python.org/) environment it setup correctly. You need to install Python 3.8 or newer, it may work with earlier versions of Python3 but it has been tested with Python 3.8 & 3.9. 
 
 * Create a virtual environment:
 ```bash
@@ -91,6 +91,30 @@ $ source venv/bin/activate
 # from the requirements.txt file
 (venv) $ pip install -r requirements.txt
 ```
+
+### Step 2 - Generate view data for the next year
+
+Make sure you run the *generate_annual_view_data.py* first as otherwise you won't have any data. 
+
+```bash
+# Default way to run it
+(venv) $ python generate_annual_view_data.py
+# Alternatively you can use a config other than config.json
+(venv) $ python generate_annual_view_data.py alternative_config.json
+```
+
+Now wait a while... have gotten some performance gains so instead of taking days should take hours. It's about 2-3 hours on my highend consumer systems. The process of iterating over a year is CPU bound and Python is inherently slow, so this is something to revisit. 
+
+After this has completed you should have an *astro.db* file, that is a SQLite database. Considered building this in Docker with a MongoDB container but felt this was more portable after discovering you can insert JSON into SQLite. 
+
+### Step 3 - Generate CSV files as you wish
+
+Now you can use the data to generate an annual view file for a given target you can see into a CSV that you can open in Excel/Numbers or copy the contents into a Google Sheet. This is pretty functional for now but may revisit expanding this soon. 
+
+```bash
+(venv) $ python csv_data.py
+```
+
 
 
 
