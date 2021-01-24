@@ -9,7 +9,7 @@ import multiprocessing as mp
 import json
 import sqlite3
 
-conn = sqlite3.connect(':memory:')
+conn = sqlite3.connect('astro.db')
 c = conn.cursor()
 c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='astro';")
 jobs = c.fetchall()
@@ -154,15 +154,15 @@ def view_times(name, yard, sunaltazs_next_year, tz, home,dso_data):
     print(f"Finished finding view times for {name}")
 
 def get_moon_data(sun, moon_data, home):
-    if sun.alt < -0*u.deg:
-        moon = get_moon(sun.obstime).transform_to(AltAz(obstime=sun.obstime, location=home))
-        moon_frac = moon_illumination(moon,sun)
-        moon_phases={
-            "time":str(sun.obstime.to_datetime(timezone=tz)),
-            "moonalt": Angle(moon.alt).degree,
-            "moonfrac": moon_frac
-        }
-        moon_data+=[moon_phases]
+    # if sun.alt < -0*u.deg:
+    moon = get_moon(sun.obstime).transform_to(AltAz(obstime=sun.obstime, location=home))
+    moon_frac = moon_illumination(moon,sun)
+    moon_phases={
+        "time":str(sun.obstime.to_datetime(timezone=tz)),
+        "moonalt": Angle(moon.alt).degree,
+        "moonfrac": moon_frac
+    }
+    moon_data+=[moon_phases]
 
 def quick_view_times(dsocoord, yard, sunaltazs_next_year, home):
     for sun in sunaltazs_next_year:
@@ -321,13 +321,16 @@ if __name__ == "__main__":
     sunaltazs_next_year = get_sun(times_next_year).transform_to(frame_next_year)
     
     with mp.Manager() as manager:
-        moon_data = manager.list()
-        pool2 = mp.Pool(processes=config_data["concurrency"])
+        moon_data = []
+        # moon_data = manager.list()
+        # pool2 = mp.Pool(processes=config_data["concurrency"])
         for sun in sunaltazs_next_year:
             if sun.alt <= -0*u.deg:
-                pool2.apply_async(get_moon_data, args=(sun, moon_data, home))
-        pool2.close()
-        pool2.join()
+                # pool2.apply_async(get_moon_data, args=(sun, moon_data, home))
+                get_moon_data(sun, moon_data, home)
+        # pool2.close()
+        # pool2.join()
+        # print(moon_data)
         for line in moon_data:
             c.execute("insert into astro(type, data) values (?, ?)",
                 ["moon", json.dumps(line)])
@@ -370,9 +373,3 @@ if __name__ == "__main__":
                 ["dso", json.dumps(line)])
             conn.commit()
         print("Finished Calculating Annual View Data for Visible Objects")
-    
-    # Backup a memory database to a file
-    backup_db = sqlite3.connect('astro.db')
-    conn.backup(backup_db)
-    conn.close()
-    backup_db.close()
