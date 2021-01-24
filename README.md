@@ -39,6 +39,7 @@ The config.json is the default config file used to generate the view data. I hop
 * **pixel_size** - Size of camera sensor pixel in μm or micrometers
 * **percent_capture** - What percentage of the camera diagonal should the DSO fill
 * **crop_factor** - What is the crop factor for your camera sensor, used to multiply the focal length
+    * For more info on crop factor: [Understanding Crop Factor](https://www.bhphotovideo.com/explora/photography/tips-and-solutions/understanding-crop-factor)
 * **lat** - GPS latitude of yard data is being generated for NASA Ames Research Center used in the provided config.
 * **lon** - GPS longitude of yard data is being generated for NASA Ames Research Center used in the provided config.
 * **yard** - List of JSON objects noting azimuth/altitude measurements in a 360 degree view from the yard location where targets will be viewed from. I used an app called Dioptra and my phone on a tripod at the location to measure altitude of objects restricting horizon in about 5 degree steps. You should create a new list for the yard yourself ideally sorted, the more accurate the better. 
