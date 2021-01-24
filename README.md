@@ -60,4 +60,10 @@ Two different catalog files are used both are able to be used for non-commercial
     * File: stellarium_catalog.txt
     * GNU General Public License v2.0
 
+## Running Scripts
 
+There are two primary scripts at this point:
+
+* **generate_annual_view_data.py** - leverage *config.json* or a specified alternative config file to generate view data for targets over the next year based on the complex horizon line given and your setup/location. 
+
+* **csv_data.py** - Will give you a numbered list of DSOs that are visible over the next year from the data the *generate_annual_view_data.py* script created. Select the one you wish to get the view data for and it'll generate a CSV file with the nights of the next year, how much time the given target is visible in your horizon, how much time it's above 30 degress, how much time the moon is up that night, and what the maximum fraction the moon is at that night. It's then easy to port this into a spreadsheet app to sort/graph. 
